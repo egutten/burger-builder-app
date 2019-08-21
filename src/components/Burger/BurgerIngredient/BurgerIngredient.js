@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import classes from './BurgerIngredient.module.css';
 import PropTypes from 'prop-types';
 
+//this is a class based component because we added propTypes at the bottom, although we could have also done propTypes with a functional component.
+
 class BurgerIngredient extends Component {
   render () {
     let ingredient = null;

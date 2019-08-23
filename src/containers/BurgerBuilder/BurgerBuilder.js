@@ -7,6 +7,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import {Route, withRouter} from 'react-router-dom';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -86,29 +87,16 @@ class BurgerBuilder extends Component {
   }
   
   purchaseContinueHandler = () => {
-    //alert('You continue');
-    this.setState({loading:true});
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice, //if this were a real app you would calculate the price on the server.
-      customer: {
-        name: 'Emily G',
-        address: {
-          street: 'Teststreet 1',
-          zipCode: '1231',
-          country: 'USA'
-        },
-        email: 'test@test.com'
-      },
-      deliveryMethod: 'fastest'
+    const queryParams = [];
+    for (let i in this.state.ingredients) {
+      queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i])); //basically setting up an array of ingredient=number strings.
     }
-    axios.post('/orders.json', order)  //the .json is a firebase requirement only.
-      .then(response => {
-        this.setState({loading: false, purchasing: false});
-      })
-      .catch(error => {
-        this.setState({loading: false, purchasing: false});
-      });
+    queryParams.push('price=' + this.state.totalPrice);
+    const queryString = queryParams.join('&');
+    this.props.history.push({
+      pathname: '/checkout',
+      search: '?' + queryString
+    });
   }
   
   render() {

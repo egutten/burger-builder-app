@@ -5,6 +5,7 @@ import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import {withRouter} from 'react-router';
 import Input from '../../../components/UI/Input/Input';
+import {connect} from 'react-redux';
 
 class ContactData extends Component {
   state = {
@@ -106,7 +107,7 @@ class ContactData extends Component {
       formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value; //creates key value pairs for the value the user ended
     }
     const order = {
-      ingredients: this.props.ingredients,
+      ingredients: this.props.ings,
       price: this.props.price, //if this were a real app you would calculate the price on the server.
       orderData: formData
       
@@ -194,4 +195,11 @@ class ContactData extends Component {
 
 //inputtype had to be all lower case due to issues of naming props in relation to html attributes.
 
-export default withRouter(ContactData);
+const mapStateToProps = state => {
+  return {
+    ings: state.ingredients,
+    price: state.totalPrice
+  }
+};
+
+export default withRouter(connect(mapStateToProps)(ContactData));

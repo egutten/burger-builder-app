@@ -11,10 +11,6 @@ class Modal extends Component {
   }
   //basically, only render if the modal shows up
   
-  componentDidUpdate () {
-    console.log('[modal] will update');
-  }
-  
   render () {
     return (
       <Aux>

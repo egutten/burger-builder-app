@@ -8,6 +8,7 @@ import Input from '../../../components/UI/Input/Input';
 import {connect} from 'react-redux';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions/index';
+import {updateObject, checkValidation} from '../../../shared/utility';
 
 class ContactData extends Component {
   state = {
@@ -78,7 +79,8 @@ class ContactData extends Component {
         },
         value: '',
         validation: {
-          required: true
+          required: true,
+          isEmail: true
         },
         valid: false,
         touched: false,
@@ -104,6 +106,7 @@ class ContactData extends Component {
     event.preventDefault(); //to prevent the page from reloading when you hit order on the form.
     
     const formData = {};
+    //eslint-disable-next-line
     for (let formElementIdentifier in this.state.orderForm) {
       formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value; //creates key value pairs for the value the user ended
     }
@@ -117,34 +120,18 @@ class ContactData extends Component {
     this.props.onOrderBurger(order, this.props.token);
   }
   
-  checkValidation(value, rules) {
-    let isValid = true;
-    
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid; //trim removes white space at the beginning/end; prevents someone inputting blank spaces.
-    }
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid
-    }
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid
-    }
-    return isValid; //& isValid only allows each statement to be true if isValid was already true before (because after each if statement, isValid keeps changing). This means that every requirement has to be met for isValid to come out true.
-  }
-  
   inputChangedHandler = (event, inputIdentifier) => {
-    const updatedOrderForm = {
-      ...this.state.orderForm
-    };
-    const updatedFormElement = {
-      ...updatedOrderForm[inputIdentifier] //this creates a deep clone; one that actually reaches the value prop nested within each key.
-    };
-    updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkValidation(updatedFormElement.value, updatedFormElement.validation);
-    updatedFormElement.touched = true;
-    updatedOrderForm[inputIdentifier] = updatedFormElement;
-    
+    const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+      value: event.target.value,
+      valid: checkValidation(event.target.value, this.state.orderForm[inputIdentifier].validation),
+      touched: true
+    });
+    const updatedOrderForm = updateObject(this.state.orderForm, {
+      [inputIdentifier]: updatedFormElement
+    });
+  
     let formIsValid = true;
+    //eslint-disable-next-line
     for (let inputIdentifier in updatedOrderForm) {
       formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
     }
@@ -153,6 +140,7 @@ class ContactData extends Component {
   
   render() {
     const formElementsArray = [];
+    //eslint-disable-next-line
     for (let key in this.state.orderForm) {
       formElementsArray.push({
         id: key, //name, email etc.

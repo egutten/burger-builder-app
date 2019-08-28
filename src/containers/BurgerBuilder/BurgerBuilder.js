@@ -7,7 +7,6 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios-orders';
-import {Route, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../store/actions/index';
 
@@ -54,6 +53,7 @@ class BurgerBuilder extends Component {
     const disabledInfo = {
       ...this.props.ings
     };
+    //eslint-disable-next-line
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0
     }

@@ -11,7 +11,7 @@ import orderReducer from './store/reducers/order';
 import burgerBuilderReducer from './store/reducers/burgerBuilder';
 import authReducer from './store/reducers/auth'
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose; //node_env set up is specific to this code package (can only see this if you eject)
 
 const rootReducer = combineReducers({
   burgerBuilder: burgerBuilderReducer,
